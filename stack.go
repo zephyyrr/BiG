@@ -8,13 +8,13 @@ type Stack interface {
 }
 
 type LinkedStack struct {
-	top *Element
+	top  *Element
 	size int
 }
 
 type Element struct {
 	value int32
-	next *Element
+	next  *Element
 }
 
 func (ls LinkedStack) Push(value int32) {
@@ -24,7 +24,7 @@ func (ls LinkedStack) Push(value int32) {
 
 func (ls LinkedStack) Pop() int32 {
 	defer func() {
-		ls.top = top.next
+		ls.top = ls.top.next
 		ls.size--
 	}()
 	return ls.Peek()
