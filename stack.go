@@ -1,4 +1,4 @@
-package big
+package BiG
 
 type Stack interface {
 	Pop() int32

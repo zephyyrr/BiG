@@ -1,4 +1,4 @@
-package big
+package BiG
 
 type FungeSpace [25][80]byte
 
