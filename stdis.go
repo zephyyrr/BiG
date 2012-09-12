@@ -2,6 +2,7 @@ package BiG
 
 import (
 	"fmt"
+	"time"
 	"math/rand"
 )
 
@@ -9,6 +10,9 @@ import (
 var StdIS = make(map[byte]func(VM))
 
 func init() {
+	
+	
+	
 	for i := byte(0); i < 10; i++ {
 		StdIS[i+48] = func(vm VM) { vm.SP.Push(int32(i)) } //0 i ASCII är 48
 	}
@@ -100,8 +104,10 @@ func Gt(vm VM) {
 	}
 }
 
+var rnd = rand.New(rand.NewSource(time.Now().Unix()))
+
 func RandomDir(dirs []*Delta) *Delta {
-	return dirs[rand.Intn(len(dirs))]
+	return dirs[rnd.Intn(len(dirs))]
 }
 
 func IfLeft(vm VM) {
