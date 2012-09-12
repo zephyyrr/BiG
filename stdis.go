@@ -1,16 +1,16 @@
 package BiG
 
 import (
-	"math/rand"
 	"fmt"
+	"math/rand"
 )
 
 //StdIS is an implementation of Befunge -93.
 var StdIS = make(map[byte]func(VM))
 
 func init() {
-	for i := byte(0); i < 10 ; i++ {
-		StdIS[i + 48] = func(vm VM) {vm.SP.Push(int32(i))} //0 i ASCII är 48
+	for i := byte(0); i < 10; i++ {
+		StdIS[i+48] = func(vm VM) { vm.SP.Push(int32(i)) } //0 i ASCII är 48
 	}
 
 	StdIS['+'] = Addition
@@ -20,65 +20,65 @@ func init() {
 	StdIS['%'] = Modulo
 	StdIS['!'] = Not
 	StdIS['`'] = Gt
-	
-	StdIS['>'] = func(vm VM) {vm.Delta = &RIGHT}
-	StdIS['<'] = func(vm VM) {vm.Delta = &LEFT}
-	StdIS['^'] = func(vm VM) {vm.Delta = &UP}
-	StdIS['v'] = func(vm VM) {vm.Delta = &DOWN}
-	StdIS['?'] = func(vm VM) {vm.Delta = RandomDir([]*Delta{&LEFT, &UP, &RIGHT, &DOWN})}
-	
+
+	StdIS['>'] = func(vm VM) { vm.Delta = &RIGHT }
+	StdIS['<'] = func(vm VM) { vm.Delta = &LEFT }
+	StdIS['^'] = func(vm VM) { vm.Delta = &UP }
+	StdIS['v'] = func(vm VM) { vm.Delta = &DOWN }
+	StdIS['?'] = func(vm VM) { vm.Delta = RandomDir([]*Delta{&LEFT, &UP, &RIGHT, &DOWN}) }
+
 	StdIS['_'] = IfLeft
 	StdIS['|'] = IfUp
-	
+
 	//TODO  StdIS['"'] = StartStringmode
-	
+
 	StdIS[':'] = Duplicate
 	StdIS['\\'] = Swap
-	StdIS['$'] = func(vm VM) {vm.SP.Pop()}
-	
+	StdIS['$'] = func(vm VM) { vm.SP.Pop() }
+
 	StdIS['.'] = PrintInt
 	StdIS[','] = PrintChar
-	
-	StdIS['#'] = func(vm VM) {vm.IP.Add(*vm.Delta)}
-	
+
+	StdIS['#'] = func(vm VM) { vm.IP.Add(*vm.Delta) }
+
 	StdIS['p'] = Put
 	StdIS['g'] = Get
-	
+
 	//TODO  StdIS['&'] = AskInt
 	//TODO  StdIS['~'] = AskChar
-	
-	StdIS['@'] = func(vm VM) {vm.Exit()}
+
+	StdIS['@'] = func(vm VM) { vm.Exit() }
 	StdIS[' '] = func(vm VM) {}
 }
 
 func Addition(vm VM) {
 	a := vm.SP.Pop()
 	b := vm.SP.Pop()
-	vm.SP.Push(a+b)
+	vm.SP.Push(a + b)
 }
 
 func Subtraction(vm VM) {
 	a := vm.SP.Pop()
 	b := vm.SP.Pop()
-	vm.SP.Push(b-a)
+	vm.SP.Push(b - a)
 }
 
 func Multiplication(vm VM) {
 	a := vm.SP.Pop()
 	b := vm.SP.Pop()
-	vm.SP.Push(a*b)
+	vm.SP.Push(a * b)
 }
 
 func IntDivision(vm VM) {
 	a := vm.SP.Pop()
 	b := vm.SP.Pop()
-	vm.SP.Push(b/a)
+	vm.SP.Push(b / a)
 }
 
 func Modulo(vm VM) {
 	a := vm.SP.Pop()
 	b := vm.SP.Pop()
-	vm.SP.Push(b%a)
+	vm.SP.Push(b % a)
 }
 
 func Not(vm VM) {
