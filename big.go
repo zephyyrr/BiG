@@ -61,33 +61,3 @@ func (vm VM) Run(ticker <-chan bool) {
 func (vm VM) Exit() {
 	vm.quitting = true
 }
-
-var StdIS = make(map[byte]func(VM))
-
-func init() {
-	for i := byte(0); i < 10 ; i++ {
-		StdIS[i + 48] = func(vm VM) {vm.SP.Push(int32(i))} //0 i ASCII är 48
-	}
-	
-	StdIS['<'] = func(vm VM) {vm.Delta = &LEFT}
-	StdIS['^'] = func(vm VM) {vm.Delta = &UP}
-	StdIS['>'] = func(vm VM) {vm.Delta = &RIGHT}
-	StdIS['v'] = func(vm VM) {vm.Delta = &DOWN}
-	
-	StdIS['+'] = func(vm VM) {vm.SP.Push(vm.SP.Pop() + vm.SP.Pop())}
-	StdIS['-'] = func(vm VM) {vm.SP.Push(vm.SP.Pop() - vm.SP.Pop())}
-	StdIS['*'] = func(vm VM) {vm.SP.Push(vm.SP.Pop() * vm.SP.Pop())}
-	StdIS['/'] = func(vm VM) {vm.SP.Push(vm.SP.Pop() / vm.SP.Pop())}
-	StdIS['%'] = func(vm VM) {vm.SP.Push(vm.SP.Pop() % vm.SP.Pop())}
-	StdIS['!'] = func(vm VM) { if vm.SP.Pop() == 0 {vm.SP.Push(1)} else {vm.SP.Push(0)} }
-	StdIS['`'] = func(vm VM) {
-		a, b := vm.SP.Pop(), vm.SP.Pop()
-		if b > a {vm.SP.Push(1)} else {vm.SP.Push(0)}
-	}
-	StdIS['_'] = func(vm VM) {if vm.SP.Pop() == 0 {vm.Delta = &RIGHT} else {vm.Delta = &LEFT}}
-	StdIS['|'] = func(vm VM) {if vm.SP.Pop() == 0 {vm.Delta = &DOWN} else {vm.Delta = &UP}}
-	
-	
-	StdIS['#'] = func(vm VM) {vm.IP.Add(*vm.Delta)}
-	StdIS['@'] = func(vm VM) {vm.Exit()}
-}
