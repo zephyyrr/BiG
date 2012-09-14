@@ -12,6 +12,10 @@ type LinkedStack struct {
 	size int
 }
 
+func NewStack() Stack {
+	return &LinkedStack{nil, 0}
+}
+
 type Element struct {
 	value int32
 	next  *Element
@@ -23,6 +27,9 @@ func (ls LinkedStack) Push(value int32) {
 }
 
 func (ls LinkedStack) Pop() int32 {
+	if ls.Size() == 0 {
+		return 0
+	}
 	defer func() {
 		ls.top = ls.top.next
 		ls.size--

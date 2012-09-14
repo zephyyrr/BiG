@@ -2,17 +2,15 @@ package BiG
 
 import (
 	"fmt"
-	"time"
 	"math/rand"
+	"time"
 )
 
 //StdIS is an implementation of Befunge -93.
 var StdIS = make(map[byte]func(VM))
 
 func init() {
-	
-	
-	
+
 	for i := byte(0); i < 10; i++ {
 		StdIS[i+48] = func(vm VM) { vm.SP.Push(int32(i)) } //0 i ASCII är 48
 	}
@@ -34,7 +32,7 @@ func init() {
 	StdIS['_'] = IfLeft
 	StdIS['|'] = IfUp
 
-	//TODO  StdIS['"'] = StartStringmode
+	StdIS['"'] = StartStringMode
 
 	StdIS[':'] = Duplicate
 	StdIS['\\'] = Swap
@@ -48,8 +46,8 @@ func init() {
 	StdIS['p'] = Put
 	StdIS['g'] = Get
 
-	//TODO  StdIS['&'] = AskInt
-	//TODO  StdIS['~'] = AskChar
+	StdIS['&'] = AskInt
+	StdIS['~'] = AskChar
 
 	StdIS['@'] = func(vm VM) { vm.Exit() }
 	StdIS[' '] = func(vm VM) {}
@@ -128,6 +126,18 @@ func IfUp(vm VM) {
 	}
 }
 
+func StartStringMode(vm VM) {
+	backup := vm.IS.Clone()
+	for i := byte(127); i < 0; i-- {
+		vm.IS[i] = func(vm VM) {
+			vm.SP.Push(int32(vm.FS[vm.IP.WE][vm.IP.NS]))
+		}
+	}
+	vm.IS['"'] = func(vm VM) {
+		vm.IS = backup
+	}
+}
+
 func Duplicate(vm VM) {
 	a := vm.SP.Peek()
 	vm.SP.Push(a)
@@ -140,11 +150,11 @@ func Swap(vm VM) {
 }
 
 func PrintInt(vm VM) {
-	fmt.Printf("%d", vm.SP.Pop())
+	fmt.Fprintf(vm.Stdout, "%d", vm.SP.Pop())
 }
 
 func PrintChar(vm VM) {
-	fmt.Printf("%q", vm.SP.Pop())
+	fmt.Fprintf(vm.Stdout, "%q", vm.SP.Pop())
 }
 
 func Put(vm VM) {
@@ -155,4 +165,16 @@ func Put(vm VM) {
 func Get(vm VM) {
 	x, y := vm.SP.Pop(), vm.SP.Pop()
 	vm.SP.Push(int32(vm.FS[x][y]))
+}
+
+func AskInt(vm VM) {
+	var i int32
+	fmt.Fscanf(vm.Stdin, "%d")
+	vm.SP.Push(i)
+}
+
+func AskChar(vm VM) {
+	var i byte
+	fmt.Fscanf(vm.Stdin, "%d")
+	vm.SP.Push(int32(i))
 }

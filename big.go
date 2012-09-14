@@ -1,5 +1,10 @@
 package BiG
 
+import (
+	"io"
+	"os"
+)
+
 type FungeSpace [25][80]byte
 
 type InstructionPointer struct {
@@ -35,6 +40,14 @@ var (
 
 type InstructionSet map[byte]func(VM)
 
+func (old InstructionSet) Clone() (newIS InstructionSet) {
+	newIS = make(InstructionSet)
+	for k, v := range old {
+		newIS[k] = v
+	}
+	return
+}
+
 type VM struct {
 	FS       *FungeSpace
 	IP       *InstructionPointer
@@ -42,6 +55,20 @@ type VM struct {
 	Delta    *Delta
 	SP       Stack
 	quitting bool
+	Stdin    io.Reader
+	Stdout   io.Writer
+}
+
+func NewVM(fs *FungeSpace) (vm *VM) {
+	vm = new(VM)
+	vm.Delta = &LEFT
+	vm.quitting = false
+	vm.SP = NewStack()
+	vm.IS = StdIS
+	vm.FS = fs
+	vm.Stdin = os.Stdin
+	vm.Stdout = os.Stdout
+	return
 }
 
 func (vm VM) Tick() {
