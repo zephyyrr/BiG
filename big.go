@@ -3,6 +3,7 @@ package BiG
 import (
 	"io"
 	"os"
+	"time"
 )
 
 type FungeSpace [25][80]byte
@@ -76,8 +77,8 @@ func (vm VM) Tick() {
 	vm.IP.Add(*vm.Delta)
 }
 
-func (vm VM) Run(ticker <-chan bool) {
-	for _ = range ticker {
+func (vm VM) Run(ticker time.Ticker) {
+	for _ = range ticker.C {
 		if vm.quitting {
 			break
 		}
