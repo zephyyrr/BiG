@@ -7,11 +7,11 @@ import (
 )
 
 //StdIS is an implementation of Befunge -93.
-var StdIS = make(map[byte]func(*VM))
+var StdIS = make(map[int8]func(*VM))
 
 func init() {
 
-	for i := byte(0); i < 10; i++ {
+	for i := int8(0); i < 10; i++ {
 		StdIS[i+48] = Pusher(i)  //0 i ASCII är 48
 	}
 
@@ -53,7 +53,7 @@ func init() {
 	StdIS[' '] = func(vm *VM) {}
 }
 
-func Pusher(i byte) func(*VM) {
+func Pusher(i int8) func(*VM) {
 	return func(vm *VM) {vm.SP.Push(int32(i)) }
 	}
 
@@ -132,7 +132,7 @@ func IfUp(vm *VM) {
 
 func StartStringMode(vm *VM) {
 	backup := vm.IS.Clone()
-	for i := byte(127); i > 0; i-- {
+	for i := int8(127); i > 0; i-- {
 		vm.IS[i] = func(vm *VM) {
 			//fmt.Println("PUSHING:", vm.FS[vm.IP.NS][vm.IP.WE])
 			vm.SP.Push(int32(vm.FS[vm.IP.NS][vm.IP.WE]))
@@ -164,7 +164,7 @@ func PrintChar(vm *VM) {
 
 func Put(vm *VM) {
 	y, x, v := vm.SP.Pop(), vm.SP.Pop(), vm.SP.Pop()
-	vm.FS[y][x] = byte(v)
+	vm.FS[y][x] = int8(v)
 }
 
 func Get(vm *VM) {

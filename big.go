@@ -13,7 +13,7 @@ const (
 	PAGEHEIGHT = 25
 )
 
-type FungeSpace [PAGEHEIGHT][PAGEWIDTH]byte
+type FungeSpace [PAGEHEIGHT][PAGEWIDTH]int8
 
 func (fs FungeSpace) String() string {
 	buff := new(bytes.Buffer)
@@ -57,7 +57,7 @@ var (
 	DOWN  = Delta{0, 1}
 )
 
-type InstructionSet map[byte]func(*VM)
+type InstructionSet map[int8]func(*VM)
 
 func (old InstructionSet) Clone() (newIS InstructionSet) {
 	newIS = make(InstructionSet)
@@ -92,12 +92,12 @@ func NewVM(fs *FungeSpace) (vm *VM) {
 }
 
 func (vm *VM) Tick() {
-	//fmt.Println("Tick!")
 	f := vm.IS[vm.FS[vm.IP.NS][vm.IP.WE]]
 	if f != nil {
 		f(vm)
 	}
 	vm.IP.Add(*vm.Delta)
+	//fmt.Println("Tick end!")
 }
 
 func (vm *VM) Run(ticker *time.Ticker) {
