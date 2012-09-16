@@ -150,8 +150,8 @@ func Duplicate(vm *VM) {
 
 func Swap(vm *VM) {
 	a, b := vm.SP.Pop(), vm.SP.Pop()
-	vm.SP.Push(b)
 	vm.SP.Push(a)
+	vm.SP.Push(b)
 }
 
 func PrintInt(vm *VM) {
@@ -163,12 +163,12 @@ func PrintChar(vm *VM) {
 }
 
 func Put(vm *VM) {
-	x, y, v := vm.SP.Pop(), vm.SP.Pop(), vm.SP.Pop()
+	y, x, v := vm.SP.Pop(), vm.SP.Pop(), vm.SP.Pop()
 	vm.FS[y][x] = byte(v)
 }
 
 func Get(vm *VM) {
-	x, y := vm.SP.Pop(), vm.SP.Pop()
+	y, x := vm.SP.Pop(), vm.SP.Pop()
 	if y < PAGEHEIGHT && y >= 0 && x < PAGEWIDTH && x >= 0 {
 		vm.SP.Push(int32(vm.FS[y][x]))
 	} else {
