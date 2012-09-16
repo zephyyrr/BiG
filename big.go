@@ -8,12 +8,17 @@ import (
 	"fmt"
 )
 
-type FungeSpace [25][80]byte
+const (
+	PAGEWIDTH = 80
+	PAGEHEIGHT = 25
+)
+
+type FungeSpace [PAGEHEIGHT][PAGEWIDTH]byte
 
 func (fs FungeSpace) String() string {
 	buff := new(bytes.Buffer)
-	for i := 0; i < 25; i++ {
-		for j := 0; j < 80; j++ {
+	for i := 0; i < PAGEHEIGHT; i++ {
+		for j := 0; j < PAGEWIDTH; j++ {
 			fmt.Fprint(buff, string(fs[i][j]))
 		}
 		fmt.Fprintln(buff)
@@ -29,17 +34,17 @@ func (ip *InstructionPointer) Add(d Delta) {
 	ip.NS += d[1]
 	ip.WE += d[0]
 	if ip.NS < 0 {
-		ip.NS = 25 + ip.NS
+		ip.NS = PAGEHEIGHT + ip.NS
 	}
 	if ip.NS > 24 {
-		ip.NS = ip.NS % 25
+		ip.NS = ip.NS % PAGEHEIGHT
 	}
 
 	if ip.WE < 0 {
-		ip.WE = 80 + ip.WE
+		ip.WE = PAGEWIDTH + ip.WE
 	}
 	if ip.WE > 24 {
-		ip.WE = ip.WE % 80
+		ip.WE = ip.WE % PAGEWIDTH
 	}
 }
 
@@ -87,7 +92,7 @@ func NewVM(fs *FungeSpace) (vm *VM) {
 }
 
 func (vm *VM) Tick() {
-	fmt.Println("Tick!")
+	//fmt.Println("Tick!")
 	f := vm.IS[vm.FS[vm.IP.NS][vm.IP.WE]]
 	if f != nil {
 		f(vm)
@@ -96,7 +101,6 @@ func (vm *VM) Tick() {
 }
 
 func (vm *VM) Run(ticker *time.Ticker) {
-	fmt.Println(vm.FS.String())
 	for _ = range ticker.C {
 		if vm.quitting {
 			break
