@@ -32,7 +32,7 @@ func init() {
 	StdIS['_'] = IfLeft
 	StdIS['|'] = IfUp
 
-	StdIS['"'] = StartStringMode
+	StdIS['"'] = QuickStringMode
 
 	StdIS[':'] = Duplicate
 	StdIS['\\'] = Swap
@@ -140,6 +140,14 @@ func StartStringMode(vm *VM) {
 	}
 	vm.IS['"'] = func(vm *VM) {
 		vm.IS = backup
+	}
+}
+
+func QuickStringMode(vm *VM) {
+	vm.IP.Add(*vm.Delta)
+	for next := vm.FS[vm.IP.NS][vm.IP.WE];next != '"'; next = vm.FS[vm.IP.NS][vm.IP.WE] {
+		vm.SP.Push(int32(next))
+		vm.IP.Add(*vm.Delta)
 	}
 }
 
